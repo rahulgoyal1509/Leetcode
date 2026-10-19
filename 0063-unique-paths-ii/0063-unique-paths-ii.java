@@ -1,23 +1,35 @@
 class Solution {
-    public int checkPath(int m, int n, int[][] obstacleGrid, int[][] dp){
-        if (m < 0 || n < 0) return 0;
-        if (obstacleGrid[m][n] == 1) return 0;
-
-        if (m == 0 && n == 0) return 1;
-
-        if (dp[m][n] != -1) return dp[m][n];
-
-        return dp[m][n] = checkPath(m - 1, n, obstacleGrid, dp) + checkPath(m, n - 1, obstacleGrid,dp);
-    }
-
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
         int m = obstacleGrid.length, n = obstacleGrid[0].length;
+        if (obstacleGrid[0][0] == 1) return 0;
 
         int[][] dp = new int[m][n];
         for (int[] row : dp){
-            Arrays.fill(row, -1);
+            Arrays.fill(row, 0);
         }
 
-        return checkPath(m - 1, n - 1, obstacleGrid, dp);
+        dp[0][0] = 1;
+
+        boolean flag = true;
+        for (int i = 1;i < n;i++){
+            if (obstacleGrid[0][i] == 1) flag = false;
+            if (obstacleGrid[0][i] == 0 && flag) dp[0][i] = 1;
+        }
+        
+        flag = true;
+        for (int i = 1;i < m;i++){
+            if (obstacleGrid[i][0] == 1) flag = false;
+            if (obstacleGrid[i][0] == 0 && flag) dp[i][0] = 1;
+        }
+
+        for (int i = 1;i < m;i++){
+            for (int j = 1;j < n;j++){
+		        if (obstacleGrid[i][j] == 1) continue;
+                
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+
+        return dp[m - 1][n - 1];
     }
 }
